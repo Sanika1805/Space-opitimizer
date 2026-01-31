@@ -1,0 +1,11 @@
+{
+  "name": "green-space-optimizer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Green Space Optimizer - MERN + React JS + Tailwind",
+  "scripts": {
+    "backend": "cd backend && npm run dev",
+    "client": "cd client && npm run dev",
+    "install:all": "cd backend && npm install && cd ../client && npm install"
+  }
+}
