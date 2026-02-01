@@ -11,6 +11,7 @@ const locationSchema = new mongoose.Schema({
   hasPond: { type: Boolean, default: false },
   plantCount: { type: Number, default: 0 },
   lastCampDate: { type: Date, default: null },
+  lastAreaAlertAt: { type: Date, default: null },
   createdAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 

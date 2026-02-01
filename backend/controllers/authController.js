@@ -53,13 +53,13 @@ exports.getMe = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const allowed = [
-      'area', 'mobile', 'bloodGroup', 'transportMode', 'dietPreference',
+      'area', 'region', 'subscribedAreas', 'mobile', 'bloodGroup', 'transportMode', 'dietPreference',
       'recyclingHabit', 'energySaving', 'waterSaving', 'plantAtHome', 'reusableBags'
     ];
     const updates = {};
     allowed.forEach((key) => {
       if (req.body[key] === undefined) return;
-      if (key === 'energySaving' || key === 'waterSaving') {
+      if (key === 'energySaving' || key === 'waterSaving' || key === 'subscribedAreas') {
         updates[key] = Array.isArray(req.body[key]) ? req.body[key] : [req.body[key]].filter(Boolean);
       } else {
         updates[key] = req.body[key];

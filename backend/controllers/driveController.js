@@ -1,6 +1,7 @@
 const Drive = require('../models/Drive');
 const Location = require('../models/Location');
 const { getTasksForLocation } = require('../services/aiTasks');
+const { createPostForDrive } = require('../services/communityService');
 
 exports.getDrives = async (req, res) => {
   try {
@@ -44,6 +45,7 @@ exports.createDrive = async (req, res) => {
       maxParticipants: maxParticipants || 20,
       tasks: tasks.map(t => ({ title: t, done: false }))
     });
+    createPostForDrive(drive._id).catch(() => {});
     const populated = await Drive.findById(drive._id).populate('location');
     res.status(201).json(populated);
   } catch (err) {

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'incharge', 'admin'], default: 'user' },
   preferredTimePoll: [{ day: String, timeSlot: String }],
   region: { type: String, default: '' },
+  subscribedAreas: { type: [String], default: [] },
   lastDriveMonth: { type: String, default: null },
   consecutiveMisses: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now },

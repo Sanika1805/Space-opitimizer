@@ -3,6 +3,17 @@ const Drive = require('../models/Drive');
 
 const garbageWeight = { low: 1, medium: 2, high: 3 };
 
+/**
+ * AQI-based priority from Task1.ipynb: 0-120 Low, 121-155 Medium, 156+ High
+ */
+function setPriorityFromAqi(aqi) {
+  if (aqi == null || isNaN(aqi)) return 'Medium';
+  const val = Number(aqi);
+  if (val <= 120) return 'Low';
+  if (val <= 155) return 'Medium';
+  return 'High';
+}
+
 async function getPriorityLocations(query = {}) {
   const { region, limit = 10 } = query;
   const filter = region ? { region } : {};
@@ -24,10 +35,12 @@ async function getPriorityLocations(query = {}) {
       const plantScore = Math.max(0, 30 - (loc.plantCount || 0));
       const recencyScore = Math.min(100, daysSinceCamp * 2);
       const priorityScore = aqiScore * 0.3 + garbageScore * 0.3 + recencyScore * 0.25 + plantScore * 0.15;
+      const aqiPriority = setPriorityFromAqi(loc.aqi);
       return {
         ...loc,
         priorityScore: Math.round(priorityScore),
-        daysSinceCamp: lastCampDate ? daysSinceCamp : null
+        daysSinceCamp: lastCampDate ? daysSinceCamp : null,
+        aqiPriority
       };
     })
   );
@@ -36,4 +49,4 @@ async function getPriorityLocations(query = {}) {
   return withScores.slice(0, parseInt(limit, 10) || 10);
 }
 
-module.exports = { getPriorityLocations };
+module.exports = { getPriorityLocations, setPriorityFromAqi };

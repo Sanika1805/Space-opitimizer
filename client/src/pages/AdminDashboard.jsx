@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
-import { inchargesApi } from '../services/api';
+import { inchargesApi, locationsApi, notificationsApi } from '../services/api';
 
 export default function AdminDashboard() {
   const [pending, setPending] = useState([]);
   const [all, setAll] = useState([]);
   const [tab, setTab] = useState('pending');
+  const [locations, setLocations] = useState([]);
+  const [sendingAlert, setSendingAlert] = useState(null);
   const [loading, setLoading] = useState(true);
   const [detail, setDetail] = useState(null);
   const [verifying, setVerifying] = useState(null);
@@ -14,7 +16,9 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([loadPending(), loadAll()]).finally(() => setLoading(false));
+    Promise.all([loadPending(), loadAll(), locationsApi.list().then(setLocations).catch(() => [])]).finally(() =>
+      setLoading(false)
+    );
   }, []);
 
   const handleVerify = async (id) => {
@@ -40,6 +44,18 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSendAreaAlert = async (locationId) => {
+    setSendingAlert(locationId);
+    try {
+      await notificationsApi.sendAreaAlert(locationId);
+      alert('Area alert sent successfully');
+    } catch (err) {
+      alert(err.message || 'Failed to send alert');
+    } finally {
+      setSendingAlert(null);
+    }
+  };
+
   const list = tab === 'pending' ? pending : all;
 
   if (loading) {
@@ -58,7 +74,7 @@ export default function AdminDashboard() {
           Review incharges who submitted verification. Approve them so they are marked as verified.
         </p>
 
-        <div className="flex gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-6">
           <button
             type="button"
             onClick={() => setTab('pending')}
@@ -77,8 +93,48 @@ export default function AdminDashboard() {
           >
             All incharges ({all.length})
           </button>
+          <button
+            type="button"
+            onClick={() => setTab('alerts')}
+            className={`px-4 py-2 rounded-lg font-medium ${
+              tab === 'alerts' ? 'bg-green-600 text-white' : 'bg-white text-gray-700 border border-green-200'
+            }`}
+          >
+            Area Alerts (Task1)
+          </button>
         </div>
 
+        {tab === 'alerts' && (
+          <div className="bg-white rounded-xl shadow-lg border border-green-200 p-6 mb-6">
+            <h2 className="text-xl font-semibold text-green-800 mb-2">Send AQI Area Alerts (from Task1.ipynb)</h2>
+            <p className="text-gray-600 text-sm mb-4">
+              Send notifications to users in each area based on AQI priority (Low 0–120, Medium 121–155, High 156+).
+            </p>
+            {locations.length === 0 ? (
+              <p className="text-gray-500">No locations. Add locations or run the CSV import script first.</p>
+            ) : (
+              <ul className="space-y-2">
+                {locations.map((loc) => (
+                  <li key={loc._id} className="flex items-center justify-between py-2 border-b border-green-100 last:border-0">
+                    <span>
+                      <strong>{loc.name}</strong> ({loc.region}) – AQI: {loc.aqi ?? '–'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleSendAreaAlert(loc._id)}
+                      disabled={sendingAlert === loc._id}
+                      className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:opacity-50"
+                    >
+                      {sendingAlert === loc._id ? 'Sending...' : 'Send alert'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+
+        {tab !== 'alerts' && (
         <div className="bg-white rounded-xl shadow-lg border border-green-200 overflow-hidden">
           {list.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
@@ -124,6 +180,7 @@ export default function AdminDashboard() {
             </ul>
           )}
         </div>
+        )}
 
         {detail && (
           <div

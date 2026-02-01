@@ -1,4 +1,6 @@
-const API_BASE = '/api';
+const API_BASE = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_API_URL)
+  ? import.meta.env.VITE_API_URL.replace(/\/$/, '')
+  : '/api';
 
 function getToken() {
   return localStorage.getItem('token');
@@ -103,6 +105,46 @@ export const aiApi = {
       method: 'POST',
       headers: headers(),
       body: JSON.stringify({ query })
+    }).then((r) => r.json())
+};
+
+export const communityApi = {
+  getMyAreas: () =>
+    fetch(`${API_BASE}/community/my-areas`, { headers: headers() }).then((r) => r.json()),
+  getMyPosts: () =>
+    fetch(`${API_BASE}/community/my-posts`, { headers: headers() }).then((r) => r.json()),
+  getPosts: (region) =>
+    fetch(`${API_BASE}/community/posts?region=${encodeURIComponent(region)}`, { headers: headers() }).then((r) =>
+      r.json()
+    )
+};
+
+export const notificationsApi = {
+  list: (params) => {
+    const q = new URLSearchParams(params).toString();
+    return fetch(`${API_BASE}/notifications${q ? '?' + q : ''}`, { headers: headers() }).then((r) => r.json());
+  },
+  markRead: (id) =>
+    fetch(`${API_BASE}/notifications/${id}/read`, {
+      method: 'PATCH',
+      headers: headers()
+    }).then((r) => r.json()),
+  markAllRead: () =>
+    fetch(`${API_BASE}/notifications/read-all`, {
+      method: 'PATCH',
+      headers: headers()
+    }).then((r) => r.json()),
+  sendAreaAlert: (locationId) =>
+    fetch(`${API_BASE}/notifications/send-area-alert`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ locationId })
+    }).then((r) => r.json()),
+  sendAllAreaAlerts: (region) =>
+    fetch(`${API_BASE}/notifications/send-all-area-alerts`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(region ? { region } : {})
     }).then((r) => r.json())
 };
 

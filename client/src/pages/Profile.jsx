@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authApi } from '../services/api';
+import { authApi, locationsApi } from '../services/api';
 
 const BLOOD_GROUPS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
 const TRANSPORT_OPTIONS = ['Walk / Cycle', 'Public transport', 'Car / Bike', 'Mixed'];
@@ -19,6 +19,8 @@ export default function Profile() {
   const [loadError, setLoadError] = useState('');
   const [form, setForm] = useState({
     area: '',
+    region: '',
+    subscribedAreas: [],
     mobile: '',
     bloodGroup: '',
     transportMode: '',
@@ -41,6 +43,8 @@ export default function Profile() {
           const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
           setForm({
             area: data.area ?? '',
+            region: data.region ?? '',
+            subscribedAreas: toArray(data.subscribedAreas),
             mobile: data.mobile ?? '',
             bloodGroup: data.bloodGroup ?? '',
             transportMode: data.transportMode ?? '',
@@ -58,6 +62,8 @@ export default function Profile() {
       .finally(() => setLoading(false));
   };
 
+  const [locations, setLocations] = useState([]);
+
   useEffect(() => {
     if (user?.role === 'incharge') {
       navigate('/incharge/dashboard', { replace: true });
@@ -65,6 +71,10 @@ export default function Profile() {
     }
     loadProfile();
   }, [user?.role, navigate]);
+
+  useEffect(() => {
+    locationsApi.list().then(setLocations).catch(() => []);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -153,6 +163,17 @@ export default function Profile() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
+                <input
+                  type="text"
+                  name="region"
+                  value={form.region}
+                  onChange={handleChange}
+                  placeholder="e.g. Katraj"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mobile number</label>
                 <input
                   type="tel"
@@ -177,6 +198,27 @@ export default function Profile() {
                   ))}
                 </select>
               </div>
+            </div>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-green-800 mb-3">Area communities</h2>
+            <p className="text-sm text-gray-600 mb-2">
+              Join area communities to receive automatic AQI alerts for these regions. You will get notifications when your areas need cleaning.
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {[...new Set(locations.map((l) => l.region).filter(Boolean))].sort().map((reg) => (
+                <label key={reg} className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:bg-green-100">
+                  <input
+                    type="checkbox"
+                    checked={form.subscribedAreas.includes(reg)}
+                    onChange={(e) => handleMultiChange('subscribedAreas', reg, e.target.checked)}
+                    className="w-4 h-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
+                  />
+                  <span className="text-sm text-gray-700">{reg}</span>
+                </label>
+              ))}
+              {locations.length === 0 && <span className="text-sm text-gray-500">No areas yet. Add locations to your system first.</span>}
             </div>
           </section>
 

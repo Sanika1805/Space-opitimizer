@@ -36,11 +36,12 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-emerald-100 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-green-800 mb-6">My Impact</h1>
+    <div className="min-h-screen bg-gradient-to-b from-green-50 via-emerald-50/80 to-teal-50 py-10 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-green-800 mb-2 tracking-tight">My Impact</h1>
+        <p className="text-gray-600 mb-8">Track your contributions to a greener planet</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <StatsCard
             label="Coins"
             value={score?.coins ?? 0}
@@ -60,13 +61,15 @@ export default function Dashboard() {
           />
         </div>
 
-        <section className="bg-white rounded-xl shadow-lg border border-green-200 p-6 mb-8">
-          <h2 className="text-xl font-semibold text-green-800 mb-4">Virtual Jungle</h2>
+        <section className="bg-white/90 backdrop-blur rounded-2xl shadow-xl border-2 border-green-200/80 p-6 mb-10">
+          <h2 className="text-xl font-bold text-green-800 mb-4 flex items-center gap-2">
+            <span role="img" aria-hidden="true">🌲</span> Virtual Jungle
+          </h2>
           <VirtualJungle level={score?.virtualJungleLevel ?? 0} coins={score?.coins ?? 0} />
         </section>
 
         {habit && (
-          <section className="mb-8">
+          <section className="mb-10">
             <HabitTip habit={habit} onComplete={() => scoringApi.completeHabit(habit.points).then(setScore)} />
           </section>
         )}
@@ -74,9 +77,9 @@ export default function Dashboard() {
         <div className="flex gap-4">
           <button
             onClick={handleShare}
-            className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700"
+            className="px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
           >
-            Share my impact on social media
+            <span role="img" aria-hidden="true">📤</span> Share my impact on social media
           </button>
         </div>
       </div>

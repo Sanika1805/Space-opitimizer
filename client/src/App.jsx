@@ -11,6 +11,9 @@ import InchargeLogin from './pages/InchargeLogin';
 import InchargeDashboard from './pages/InchargeDashboard';
 import InchargeVerify from './pages/InchargeVerify';
 import AdminDashboard from './pages/AdminDashboard';
+import Notifications from './pages/Notifications';
+import Community from './pages/Community';
+import CommunityFab from './components/CommunityFab';
 
 function PrivateRoute({ children, inchargeOnly, adminOnly }) {
   const { user, loading } = useAuth();
@@ -25,6 +28,7 @@ export default function App() {
   return (
     <>
       <Navbar />
+      <CommunityFab />
       <main>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -47,6 +51,22 @@ export default function App() {
             }
           />
           <Route path="/drives" element={<Drives />} />
+          <Route
+            path="/community"
+            element={
+              <PrivateRoute>
+                <Community />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/notifications"
+            element={
+              <PrivateRoute>
+                <Notifications />
+              </PrivateRoute>
+            }
+          />
           <Route path="/incharge" element={<InchargeLogin />} />
           <Route
             path="/admin"
