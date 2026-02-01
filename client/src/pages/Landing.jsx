@@ -2,7 +2,13 @@ import { Link } from 'react-router-dom';
 
 export default function Landing() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-50 to-emerald-100">
+    <div className="min-h-screen relative">
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: 'url(/get-started-bg.png)' }}
+        aria-hidden="true"
+      />
+      <div className="relative z-10 min-h-screen bg-gradient-to-b from-green-50/80 to-emerald-100/80">
       <section className="max-w-5xl mx-auto px-4 py-20 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-green-800 mb-4">
           Green Space Optimizer
@@ -34,6 +40,7 @@ export default function Landing() {
           <p className="text-gray-600 text-sm">Simple habits like steel bottles, home plants. Extra score for completing them.</p>
         </div>
       </section>
+      </div>
     </div>
   );
 }

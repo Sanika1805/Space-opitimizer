@@ -1,14 +1,18 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthPage = ['/signup', '/login', '/incharge'].includes(location.pathname);
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
+  const showGuestNav = !user || isAuthPage;
 
   return (
     <nav className="bg-green-800 text-white shadow-lg">
@@ -17,11 +21,14 @@ export default function Navbar() {
           Green Space Optimizer
         </Link>
         <div className="flex gap-4 items-center">
-          {user ? (
+          {showGuestNav ? (
             <>
-              {user.role === 'admin' ? (
-                <Link to="/admin" className="hover:underline">Admin</Link>
-              ) : user.role === 'incharge' ? (
+              <Link to="/login" className="hover:underline">Login</Link>
+              <Link to="/incharge" className="hover:underline">Incharge</Link>
+            </>
+          ) : (
+            <>
+              {user.role === 'incharge' ? (
                 <Link to="/incharge/dashboard" className="hover:underline">Incharge</Link>
               ) : (
                 <>
@@ -47,11 +54,6 @@ export default function Navbar() {
               >
                 Logout
               </button>
-            </>
-          ) : (
-            <>
-              <Link to="/login" className="hover:underline">Login</Link>
-              <Link to="/incharge" className="hover:underline">Incharge</Link>
             </>
           )}
         </div>
