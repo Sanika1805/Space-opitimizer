@@ -10,21 +10,40 @@ function headers(includeAuth = true) {
   return h;
 }
 
+async function parseJsonResponse(r, text) {
+  const body = text ?? await r.text();
+  try {
+    const data = body ? JSON.parse(body) : {};
+    if (!r.ok) throw new Error(data.message || r.statusText || 'Request failed');
+    return data;
+  } catch (e) {
+    if (e instanceof SyntaxError || (body && typeof body === 'string' && body.trimStart().startsWith('<')))
+      throw new Error('Backend returned an invalid response. Make sure the backend server is running on port 5000.');
+    throw e;
+  }
+}
+
 export const authApi = {
   register: (data) =>
     fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: headers(false),
       body: JSON.stringify(data)
-    }).then((r) => r.json()),
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
   login: (data) =>
     fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
       headers: headers(false),
       body: JSON.stringify(data)
-    }).then((r) => r.json()),
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
   getMe: () =>
-    fetch(`${API_BASE}/auth/me`, { headers: headers() }).then((r) => r.json())
+    fetch(`${API_BASE}/auth/me`, { headers: headers() }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  updateProfile: (data) =>
+    fetch(`${API_BASE}/auth/profile`, {
+      method: 'PATCH',
+      headers: headers(),
+      body: JSON.stringify(data)
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t)))
 };
 
 export const drivesApi = {
@@ -95,5 +114,11 @@ export const inchargesApi = {
       method: 'POST',
       headers: headers(),
       body: JSON.stringify(data)
+    }).then((r) => r.json()),
+  submitVerification: (formData) =>
+    fetch(`${API_BASE}/incharges/verification`, {
+      method: 'POST',
+      headers: { Authorization: headers().Authorization },
+      body: formData
     }).then((r) => r.json())
 };

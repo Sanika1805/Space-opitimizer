@@ -18,6 +18,7 @@ exports.register = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      profileComplete: user.profileComplete,
       token: generateToken(user._id)
     });
   } catch (err) {
@@ -37,6 +38,7 @@ exports.login = async (req, res) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      profileComplete: user.profileComplete,
       token: generateToken(user._id)
     });
   } catch (err) {
@@ -46,4 +48,31 @@ exports.login = async (req, res) => {
 
 exports.getMe = async (req, res) => {
   res.json(req.user);
+};
+
+exports.updateProfile = async (req, res) => {
+  try {
+    const allowed = [
+      'area', 'mobile', 'bloodGroup', 'transportMode', 'dietPreference',
+      'recyclingHabit', 'energySaving', 'waterSaving', 'plantAtHome', 'reusableBags'
+    ];
+    const updates = {};
+    allowed.forEach((key) => {
+      if (req.body[key] === undefined) return;
+      if (key === 'energySaving' || key === 'waterSaving') {
+        updates[key] = Array.isArray(req.body[key]) ? req.body[key] : [req.body[key]].filter(Boolean);
+      } else {
+        updates[key] = req.body[key];
+      }
+    });
+    updates.profileComplete = true;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $set: updates },
+      { new: true }
+    ).select('-password');
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

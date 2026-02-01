@@ -42,3 +42,39 @@ exports.verifyIncharge = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+// Submit verification form (after incharge signup): mobile, experience, certifications, etc.
+exports.submitVerification = async (req, res) => {
+  try {
+    const { mobile, previousExperience, region, yearsExperience, emergencyContact } = req.body;
+    const certPaths = (req.files || []).map((f) => '/uploads/certificates/' + f.filename);
+
+    let incharge = await Incharge.findOne({ user: req.user._id });
+    if (incharge) {
+      incharge.mobile = mobile || incharge.mobile;
+      incharge.previousExperience = previousExperience || incharge.previousExperience;
+      incharge.region = region || incharge.region;
+      incharge.yearsExperience = yearsExperience || incharge.yearsExperience;
+      incharge.emergencyContact = emergencyContact || incharge.emergencyContact;
+      incharge.certifications = certPaths.length ? certPaths : incharge.certifications;
+      incharge.verificationSubmitted = true;
+      await incharge.save();
+    } else {
+      incharge = await Incharge.create({
+        user: req.user._id,
+        mobile: mobile || '',
+        previousExperience: previousExperience || '',
+        region: region || '',
+        yearsExperience: yearsExperience || '',
+        emergencyContact: emergencyContact || '',
+        certifications: certPaths,
+        verificationSubmitted: true,
+        verified: false
+      });
+    }
+    const populated = await Incharge.findById(incharge._id).populate('user', 'name email');
+    res.status(201).json(populated);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

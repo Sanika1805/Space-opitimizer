@@ -18,12 +18,6 @@ export default function Landing() {
           >
             Get Started
           </Link>
-          <Link
-            to="/drives"
-            className="px-6 py-3 bg-white text-green-700 border-2 border-green-600 rounded-lg font-semibold hover:bg-green-50"
-          >
-            View Drives
-          </Link>
         </div>
       </section>
       <section className="max-w-5xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-6">

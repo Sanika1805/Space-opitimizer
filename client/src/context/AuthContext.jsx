@@ -27,7 +27,13 @@ export function AuthProvider({ children }) {
     return authApi.login({ email, password }).then((data) => {
       if (data.token) {
         localStorage.setItem('token', data.token);
-        setUser({ _id: data._id, name: data.name, email: data.email, role: data.role });
+        setUser({
+          _id: data._id,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          profileComplete: data.profileComplete ?? false
+        });
         return data;
       }
       throw new Error(data.message || 'Login failed');
@@ -38,11 +44,21 @@ export function AuthProvider({ children }) {
     return authApi.register({ name, email, password, role }).then((data) => {
       if (data.token) {
         localStorage.setItem('token', data.token);
-        setUser({ _id: data._id, name: data.name, email: data.email, role: data.role });
+        setUser({
+          _id: data._id,
+          name: data.name,
+          email: data.email,
+          role: data.role,
+          profileComplete: data.profileComplete ?? false
+        });
         return data;
       }
       throw new Error(data.message || 'Register failed');
     });
+  };
+
+  const updateUser = (userData) => {
+    setUser((prev) => (prev ? { ...prev, ...userData } : null));
   };
 
   const logout = () => {
@@ -51,7 +67,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

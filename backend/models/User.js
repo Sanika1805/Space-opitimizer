@@ -10,7 +10,19 @@ const userSchema = new mongoose.Schema({
   region: { type: String, default: '' },
   lastDriveMonth: { type: String, default: null },
   consecutiveMisses: { type: Number, default: 0 },
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  // Profile (area, mobile, blood group, sustainability)
+  profileComplete: { type: Boolean, default: false },
+  area: { type: String, default: '' },
+  mobile: { type: String, default: '' },
+  bloodGroup: { type: String, default: '' },
+  transportMode: { type: String, default: '' }, // e.g. walk, cycle, public, car
+  dietPreference: { type: String, default: '' }, // e.g. veg, non-veg, vegan
+  recyclingHabit: { type: String, default: '' }, // e.g. regular, sometimes, none
+  energySaving: { type: [String], default: [] }, // multiple: solar, led, mindful, etc.
+  waterSaving: { type: [String], default: [] }, // multiple: rainwater, low-flow, mindful, etc.
+  plantAtHome: { type: Boolean, default: false },
+  reusableBags: { type: Boolean, default: false }
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

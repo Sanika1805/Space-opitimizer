@@ -6,8 +6,10 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import Drives from './pages/Drives';
+import Profile from './pages/Profile';
 import InchargeLogin from './pages/InchargeLogin';
 import InchargeDashboard from './pages/InchargeDashboard';
+import InchargeVerify from './pages/InchargeVerify';
 
 function PrivateRoute({ children, inchargeOnly }) {
   const { user, loading } = useAuth();
@@ -34,8 +36,24 @@ export default function App() {
               </PrivateRoute>
             }
           />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
           <Route path="/drives" element={<Drives />} />
           <Route path="/incharge" element={<InchargeLogin />} />
+          <Route
+            path="/incharge/verify"
+            element={
+              <PrivateRoute inchargeOnly>
+                <InchargeVerify />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/incharge/dashboard"
             element={
