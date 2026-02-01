@@ -29,6 +29,33 @@ exports.applyIncharge = async (req, res) => {
   }
 };
 
+// Admin: list all incharges (optional ?pending=true for verificationSubmitted but not verified)
+exports.listIncharges = async (req, res) => {
+  try {
+    const pending = req.query.pending === 'true';
+    const filter = pending
+      ? { verificationSubmitted: true, verified: false }
+      : {};
+    const incharges = await Incharge.find(filter)
+      .populate('user', 'name email')
+      .sort({ createdAt: -1 });
+    res.json(incharges);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+// Admin: get one incharge by id (to view details and certifications)
+exports.getInchargeById = async (req, res) => {
+  try {
+    const incharge = await Incharge.findById(req.params.id).populate('user', 'name email');
+    if (!incharge) return res.status(404).json({ message: 'Incharge not found' });
+    res.json(incharge);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.verifyIncharge = async (req, res) => {
   try {
     const incharge = await Incharge.findByIdAndUpdate(

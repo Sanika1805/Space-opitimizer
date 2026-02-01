@@ -10,11 +10,13 @@ import Profile from './pages/Profile';
 import InchargeLogin from './pages/InchargeLogin';
 import InchargeDashboard from './pages/InchargeDashboard';
 import InchargeVerify from './pages/InchargeVerify';
+import AdminDashboard from './pages/AdminDashboard';
 
-function PrivateRoute({ children, inchargeOnly }) {
+function PrivateRoute({ children, inchargeOnly, adminOnly }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   if (!user) return <Navigate to="/login" replace />;
+  if (adminOnly && user.role !== 'admin') return <Navigate to="/dashboard" replace />;
   if (inchargeOnly && user.role !== 'incharge') return <Navigate to="/dashboard" replace />;
   return children;
 }
@@ -46,6 +48,14 @@ export default function App() {
           />
           <Route path="/drives" element={<Drives />} />
           <Route path="/incharge" element={<InchargeLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute adminOnly>
+                <AdminDashboard />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/incharge/verify"
             element={

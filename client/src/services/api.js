@@ -120,5 +120,17 @@ export const inchargesApi = {
       method: 'POST',
       headers: { Authorization: headers().Authorization },
       body: formData
+    }).then((r) => r.json()),
+  // Admin only
+  list: (params) => {
+    const q = new URLSearchParams(params).toString();
+    return fetch(`${API_BASE}/incharges${q ? '?' + q : ''}`, { headers: headers() }).then((r) => r.json());
+  },
+  getById: (id) =>
+    fetch(`${API_BASE}/incharges/${id}`, { headers: headers() }).then((r) => r.json()),
+  verify: (id) =>
+    fetch(`${API_BASE}/incharges/${id}/verify`, {
+      method: 'PUT',
+      headers: headers()
     }).then((r) => r.json())
 };

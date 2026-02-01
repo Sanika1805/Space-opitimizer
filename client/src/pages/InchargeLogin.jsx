@@ -14,11 +14,9 @@ export default function InchargeLogin() {
     setError('');
     try {
       const data = await login(email, password);
-      if (data.role === 'incharge') {
-        navigate('/incharge/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      if (data?.role === 'admin') navigate('/admin');
+      else if (data?.role === 'incharge') navigate('/incharge/dashboard');
+      else navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed');
     }

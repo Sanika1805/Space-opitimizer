@@ -13,8 +13,10 @@ export default function Login() {
     e.preventDefault();
     setError('');
     try {
-      await login(email, password);
-      navigate('/dashboard');
+      const data = await login(email, password);
+      if (data && data.role === 'admin') navigate('/admin');
+      else if (data && data.role === 'incharge') navigate('/incharge/dashboard');
+      else navigate('/dashboard');
     } catch (err) {
       setError(err.message || 'Login failed');
     }

@@ -19,7 +19,9 @@ export default function Navbar() {
         <div className="flex gap-4 items-center">
           {user ? (
             <>
-              {user.role === 'incharge' ? (
+              {user.role === 'admin' ? (
+                <Link to="/admin" className="hover:underline">Admin</Link>
+              ) : user.role === 'incharge' ? (
                 <Link to="/incharge/dashboard" className="hover:underline">Incharge</Link>
               ) : (
                 <>
