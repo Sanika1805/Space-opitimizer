@@ -3,9 +3,6 @@ import { scoringApi, aiApi } from '../services/api';
 import VirtualJungle from '../components/VirtualJungle';
 import StatsCard from '../components/StatsCard';
 import HabitTip from '../components/HabitTip';
-import LinearRegressionInsight from '../components/LinearRegressionInsight';
-import ClusterAnalysis from '../components/ClusterAnalysis';
-import ClusteringVisualization from '../components/ClusteringVisualization';
 
 export default function Dashboard() {
   const [score, setScore] = useState(null);
@@ -69,18 +66,6 @@ export default function Dashboard() {
             <span role="img" aria-hidden="true">🌲</span> Virtual Jungle
           </h2>
           <VirtualJungle level={score?.virtualJungleLevel ?? 0} coins={score?.coins ?? 0} />
-        </section>
-
-        <section className="mb-10">
-          <LinearRegressionInsight />
-        </section>
-
-        <section className="mb-10">
-          <ClusterAnalysis />
-        </section>
-
-        <section className="mb-10">
-          <ClusteringVisualization />
         </section>
 
         {habit && (
