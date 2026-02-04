@@ -21,6 +21,7 @@ app.use('/api/scoring', require('./routes/scoring'));
 app.use('/api/ai', require('./routes/ai'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/community', require('./routes/community'));
+app.use('/api/clustering', require('./routes/clustering'));
 
 // 404 for API routes - always JSON (no next, so only runs when no route matched)
 app.use('/api', (req, res, next) => {

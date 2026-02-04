@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { inchargesApi, drivesApi, aiApi } from '../services/api';
 import EmergencyChatbot from '../components/EmergencyChatbot';
+import LinearRegressionInsight from '../components/LinearRegressionInsight';
+import ClusterAnalysis from '../components/ClusterAnalysis';
+import ClusteringVisualization from '../components/ClusteringVisualization';
 
 export default function InchargeDashboard() {
   const [profile, setProfile] = useState(null);
@@ -60,6 +63,18 @@ export default function InchargeDashboard() {
               ))}
             </div>
           )}
+        </section>
+
+        <section className="mt-10">
+          <LinearRegressionInsight />
+        </section>
+
+        <section className="mt-10">
+          <ClusterAnalysis />
+        </section>
+
+        <section className="mt-10">
+          <ClusteringVisualization />
         </section>
       </div>
     </div>
