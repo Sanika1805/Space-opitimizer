@@ -98,3 +98,12 @@ export default function App() {
     </>
   );
 }
+
+
+// import PriorityCheck from "./pages/PriorityCheck";
+
+// function App() {
+//   return <PriorityCheck />;
+// }
+
+// export default App;

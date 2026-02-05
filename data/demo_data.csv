@@ -1,0 +1,75 @@
+sub_area_name,parent_area,latitude,longitude,AQI,PM2_5,PM10,BOD,waste_tons_per_day,green_cover_percent,population_density,temperature,rainfall,pollution_level
+Katraj Lake,Katraj,18.45,73.86,145,80,125,12,18,25,12000,28,3,High
+Ambegaon Budruk Chowk,Katraj,18.4555,73.865,150,85,130,13,20,20,14000,28,3,High
+PMT Bus Stand Katraj,Katraj,18.458,73.8675,160,95,140,14,25,10,16000,29,4,High
+Rajiv Gandhi Zoo,Katraj,18.4445,73.855,120,60,90,8,10,40,8000,26,2,Low
+Bharati Vidyapeeth Campus,Katraj,18.4525,73.8585,135,70,110,9,15,30,10000,27,2,Medium
+Katraj Tunnel Area,Katraj,18.44,73.85,155,88,135,13,22,15,15000,28,3,High
+Katraj Dairy Chowk,Katraj,18.4605,73.87,150,85,130,12,21,18,14500,28,3,High
+Gokul Nagar,Katraj,18.462,73.8725,140,75,120,11,19,20,13500,27,3,Medium
+Datta Nagar,Katraj,18.468,73.875,150,85,130,13,21,18,14000,28,3,High
+Ambegaon Pathar,Katraj,18.47,73.88,145,80,125,12,20,22,13000,27,3,Medium
+Jambhulwadi Lake,Katraj,18.435,73.845,130,65,100,9,14,35,9000,26,2,Low
+Jambhulwadi Road,Katraj,18.438,73.848,150,85,130,12,22,16,15000,28,3,High
+Bharti Hospital Area,Katraj,18.451,73.862,140,75,120,11,18,22,13000,27,2,Medium
+Trimurti Chowk,Katraj,18.457,73.866,155,90,135,13,23,14,15500,29,4,High
+Vadgaon Budruk Bridge,Katraj,18.463,73.873,145,80,125,12,20,18,14000,28,3,Medium
+Padmavati Chowk,Katraj,18.4585,73.869,150,85,130,13,22,16,14500,28,3,High
+Balaji Nagar,Katraj,18.466,73.877,140,75,120,11,19,20,13500,27,3,Medium
+Santosh Nagar,Katraj,18.4715,73.8825,145,80,125,12,20,18,13800,28,3,Medium
+Tulshibaug Colony,Katraj,18.459,73.8685,145,80,125,12,20,18,14000,28,3,Medium
+Shivshankar Colony,Katraj,18.4615,73.871,150,85,130,13,22,15,15000,28,3,High
+Bharti Vidyapeeth Back Gate,Katraj,18.4535,73.857,140,75,120,11,18,22,13000,27,2,Medium
+Katraj Bus Stop,Katraj,18.456,73.866,155,90,135,14,24,12,15500,29,4,High
+Ambegaon Khurd,Katraj,18.448,73.858,145,80,125,12,20,20,13500,28,3,Medium
+Vadgaon BK Market,Katraj,18.4645,73.8745,150,85,130,13,22,16,14500,28,3,High
+Shree Nagar,Katraj,18.4695,73.879,140,75,120,11,19,22,13000,27,3,Medium
+Navale Bridge Area,Katraj,18.4725,73.882,155,90,135,14,25,14,16000,29,4,High
+Ambegaon Police Chowky,Katraj,18.4575,73.864,145,80,125,12,21,18,14000,28,3,Medium
+Trimurti Nagar,Katraj,18.471,73.881,150,85,130,13,23,15,15000,28,3,High
+Katraj-Dehu Road Junction,Katraj,18.455,73.8705,160,95,140,15,26,10,16500,29,4,High
+Telco Colony,Katraj,18.4625,73.8735,140,75,120,11,18,22,13500,27,2,Medium
+Sahakar Nagar,Katraj,18.474,73.8835,135,70,115,10,17,25,12000,27,2,Medium
+,,,,,,,,,,,,,
+Magarpatta Garden,Hadapsar,18.512,73.93,120,60,95,8,12,35,9000,26,2,Low
+Hadapsar Bus Depot,Hadapsar,18.5005,73.92,150,85,130,12,22,15,15000,28,3,High
+Mundhwa River Point,Hadapsar,18.52,73.94,155,90,135,14,25,12,16000,29,4,High
+Gadital Chowk,Hadapsar,18.498,73.925,145,80,125,11,20,18,14000,28,3,Medium
+Ramtekdi Industrial Area,Hadapsar,18.495,73.91,160,95,140,15,28,10,17000,29,4,High
+,,,,,,,,,,,,,
+Shivajinagar Bus Stand,Shivajinagar,18.53,73.847,160,95,145,14,26,10,17000,29,4,High
+FC Road Junction,Shivajinagar,18.522,73.845,150,85,130,12,22,15,15000,28,3,High
+COEP Campus,Shivajinagar,18.5295,73.8565,125,65,100,8,14,35,9000,26,2,Low
+Pune Railway Station Area,Shivajinagar,18.528,73.874,155,90,135,13,24,12,16000,29,4,High
+,,,,,,,,,,,,,
+Paud Road Junction,Kothrud,18.507,73.807,145,80,125,11,20,18,14000,28,3,Medium
+Karve Nagar Garden,Kothrud,18.4905,73.8205,120,60,95,8,12,30,10000,26,2,Low
+Warje Bridge,Kothrud,18.486,73.782,150,85,130,12,22,14,15000,28,3,High
+Ideal Colony,Kothrud,18.504,73.798,130,70,110,9,16,25,12000,27,2,Medium
+,,,,,,,,,,,,,
+Baner Hill,Baner,18.559,73.78,120,60,95,8,12,35,9000,26,2,Low
+Balewadi Stadium,Baner,18.564,73.785,135,72,115,10,18,22,12000,27,2,Medium
+Aundh Garden,Aundh,18.5575,73.805,125,65,100,8,13,32,9500,26,2,Low
+ITI Road Aundh,Aundh,18.555,73.81,140,75,120,11,19,20,13500,27,3,Medium
+,,,,,,,,,,,,,
+Pimpri Market,Pimpri,18.6175,73.804,155,90,135,13,25,15,15000,29,4,High
+Chinchwad Station Area,Chinchwad,18.629,73.799,150,85,130,12,24,18,14500,28,4,High
+Nigdi Bus Stand,Nigdi,18.651,73.765,155,90,135,13,24,18,14000,28,3,High
+Akurdi Railway Area,Akurdi,18.647,73.778,140,78,120,10,20,22,13000,27,3,Medium
+Wakad IT Park,Wakad,18.599,73.764,120,60,95,8,13,32,9500,26,2,Low
+Hinjewadi Phase 1,Hinjewadi,18.591,73.7389,140,78,120,10,20,20,13000,27,2,Medium
+Moshi Chowk,Moshi,18.673,73.837,145,80,125,11,21,18,14000,28,3,Medium
+Chakan MIDC,Chakan,18.7606,73.8637,165,95,145,15,28,12,17000,30,4,High
+Talegaon Market,Talegaon,18.7268,73.6751,130,70,110,9,16,26,11000,26,2,Medium
+,,,,,,,,,,,,,
+Bibwewadi Canal Area,Bibwewadi,18.4685,73.872,150,85,130,13,23,14,15000,28,3,High
+Upper Indira Nagar,Bibwewadi,18.471,73.878,140,75,120,11,19,22,13000,27,3,Medium
+,,,,,,,,,,,,,
+Vadgaon Sheri Chowk,Vadgaon Sheri,18.5515,73.8975,145,80,125,12,21,18,14000,28,3,Medium
+Mundhwa Bridge,Mundhwa,18.526,73.936,155,90,135,14,25,12,16000,29,4,High
+,,,,,,,,,,,,,
+Pimple Saudagar Garden,Pimple Saudagar,18.596,73.795,120,60,95,8,13,32,9500,26,2,Low
+Bhosari MIDC Phase 2,Bhosari,18.62,73.84,165,95,145,15,28,12,17000,30,4,High
+Thergaon Chowk,Thergaon,18.617,73.773,145,80,125,12,22,18,14000,28,3,Medium
+Punawale Bridge,Punawale,18.646,73.748,135,72,115,10,18,22,12000,27,2,Medium
+Dehu Road Cantonment,Dehu Road,18.69,73.76,150,85,130,13,24,16,15000,28,3,High
