@@ -1,0 +1,21 @@
+# Environment variables
+.env
+
+# Node
+node_modules/
+
+# Python
+__pycache__/
+*.pyc
+*.pkl
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build output
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
