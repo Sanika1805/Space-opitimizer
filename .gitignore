@@ -1,5 +1,9 @@
-# Environment variables
+# Secrets
 .env
+
+# Notebooks
+*.ipynb
+.ipynb_checkpoints/
 
 # Node
 node_modules/
@@ -9,13 +13,3 @@ __pycache__/
 *.pyc
 *.pkl
 
-# Jupyter
-.ipynb_checkpoints/
-
-# Build output
-dist/
-build/
-
-# OS files
-.DS_Store
-Thumbs.db
