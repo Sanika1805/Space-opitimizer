@@ -82,6 +82,8 @@ app.use('/api/ai', require('./routes/ai'));
 app.use('/api/notifications', require('./routes/notifications'));
 app.use('/api/community', require('./routes/community'));
 app.use('/api/clustering', require('./routes/clustering'));
+app.use('/api/ai-poll', require('./routes/aiPoll'));
+app.use('/api/polls', require('./routes/polls'));
 
 // 404 handler
 app.use('/api', (req, res) => {

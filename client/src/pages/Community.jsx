@@ -1,27 +1,88 @@
 import { useState, useEffect } from 'react';
-import { communityApi } from '../services/api';
+import { communityApi, pollsApi } from '../services/api';
+import { useAuth } from '../context/AuthContext';
+
+const TIME_SLOTS_POLL = ['8-11 AM', '12-3 PM', '4-6 PM'];
+
+function PollVoteForm({ poll, setPoll, setPollError, voteLoading, setVoteLoading, loadData }) {
+  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState('');
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!selectedArea || !selectedTimeSlot) return;
+    setPollError('');
+    setVoteLoading(true);
+    pollsApi.vote(poll._id, selectedArea, selectedTimeSlot).then((res) => {
+      setPoll((p) => p ? { ...p, voteCounts: res.voteCounts, voteCountsByTime: res.voteCountsByTime || {}, myVote: res.myVote } : p);
+      loadData();
+    }).catch((err) => setPollError(err.message || 'Failed to submit vote')).finally(() => setVoteLoading(false));
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <p className="text-sm font-medium text-green-800">Pick the top-priority subregion to clean (3 options) and when you’re available:</p>
+      <div className="space-y-2">
+        {(poll.areas || []).map((a) => (
+          <label key={a.name} className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="pollArea" value={a.name} checked={selectedArea === a.name} onChange={() => setSelectedArea(a.name)} className="text-green-600" />
+            <span>{a.name}</span>
+          </label>
+        ))}
+      </div>
+      <p className="text-sm font-medium text-green-800 mt-3">Time available to clean:</p>
+      <div className="space-y-2">
+        {(poll.timeSlots || TIME_SLOTS_POLL).map((slot) => (
+          <label key={slot} className="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="pollTime" value={slot} checked={selectedTimeSlot === slot} onChange={() => setSelectedTimeSlot(slot)} className="text-green-600" />
+            <span>{slot}</span>
+          </label>
+        ))}
+      </div>
+      <button type="submit" disabled={!selectedArea || !selectedTimeSlot || voteLoading} className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50">
+        {voteLoading ? 'Submitting...' : 'Submit vote'}
+      </button>
+    </form>
+  );
+}
 
 export default function Community() {
+  const { user } = useAuth();
   const [areas, setAreas] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [poll, setPoll] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pollError, setPollError] = useState('');
+  const [voteLoading, setVoteLoading] = useState(false);
+  const [generateLoading, setGenerateLoading] = useState(false);
+  const [selectedAreaForPoll, setSelectedAreaForPoll] = useState('');
+  const [closedResult, setClosedResult] = useState(null);
 
-  useEffect(() => {
+  function loadData() {
     setLoading(true);
     setError('');
-    communityApi
-      .getMyPosts()
-      .then((data) => {
+    setPollError('');
+    Promise.all([communityApi.getMyPosts(), pollsApi.getActive()])
+      .then(([data, activePoll]) => {
         setAreas(data.areas || []);
         setPosts(data.posts || []);
+        setPoll(activePoll);
+        if (!selectedAreaForPoll && (data.areas || []).length > 0) {
+          setSelectedAreaForPoll((prev) => prev || (data.areas[0] ?? ''));
+        }
       })
       .catch((err) => {
         setError(err.message || 'Could not load community');
         setAreas([]);
         setPosts([]);
+        setPoll(null);
       })
       .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    loadData();
   }, []);
 
   return (
@@ -34,6 +95,100 @@ export default function Community() {
         <p className="text-sm text-gray-500 mb-6">
           Users and incharges in these areas. Only AI shares alerts and drive instructions here.
         </p>
+
+        {closedResult && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-xl text-green-800">
+            <p className="font-semibold">Poll closed</p>
+            <p className="text-sm">Selected for next weekend drive: {closedResult.selectedArea}{closedResult.selectedTimeSlot ? ` at ${closedResult.selectedTimeSlot}` : ''} (confidence {(closedResult.confidence * 100)}%)</p>
+          </div>
+        )}
+
+        <section className="bg-white/90 rounded-2xl shadow-lg border-2 border-green-200/80 p-4 md:p-6 mb-6">
+          <h2 className="text-xl font-bold text-green-800 mb-1 flex items-center gap-2">
+            <span role="img" aria-hidden="true">🗳️</span> Drive location poll
+          </h2>
+          <p className="text-sm text-gray-600 mb-4">
+            Polls run Monday–Friday. Each area has its own poll with the top 3 highest-priority subregions to clean. Vote for subregion and your time available to clean. Result decides the next weekend drive for that area.
+          </p>
+          {pollError && (
+            <div className="mb-4 p-3 bg-red-50 text-red-700 rounded-lg text-sm border border-red-200">
+              {pollError}
+            </div>
+          )}
+          {!poll && areas.length > 0 && !loading && (
+            <div className="space-y-4">
+              <p className="text-gray-600 text-sm">Create a poll for one of your areas. Options will be the highest-priority subregions to clean in that area:</p>
+              <select
+                value={selectedAreaForPoll}
+                onChange={(e) => setSelectedAreaForPoll(e.target.value)}
+                className="border border-green-300 rounded-lg px-3 py-2 text-sm w-full max-w-xs"
+              >
+                <option value="">Select area</option>
+                {areas.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+              <button
+                type="button"
+                disabled={!selectedAreaForPoll || generateLoading}
+                onClick={() => {
+                  setPollError('');
+                  setGenerateLoading(true);
+                  pollsApi.generate(selectedAreaForPoll).then(() => { setClosedResult(null); loadData(); }).catch((err) => setPollError(err.message || 'Failed to create poll')).finally(() => setGenerateLoading(false));
+                }}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 disabled:opacity-50"
+              >
+                {generateLoading ? 'Creating...' : `Generate poll for ${selectedAreaForPoll || 'area'}`}
+              </button>
+            </div>
+          )}
+          {poll && (
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600">Region: <strong>{poll.region}</strong></p>
+              {poll.myVote ? (
+                <p className="text-green-700 font-medium">
+                  You voted for: {typeof poll.myVote === 'object' ? `${poll.myVote.areaName} at ${poll.myVote.timeSlot || ''}` : poll.myVote}
+                </p>
+              ) : (
+                <PollVoteForm poll={poll} setPoll={setPoll} setPollError={setPollError} voteLoading={voteLoading} setVoteLoading={setVoteLoading} loadData={loadData} />
+              )}
+              <div className="text-sm text-gray-600">
+                <p className="font-medium mb-1">Votes so far (subregion):</p>
+                <ul className="list-disc list-inside">
+                  {(poll.areas || []).map((a) => (
+                    <li key={a.name}>{a.name}: {poll.voteCounts?.[a.name] ?? 0}</li>
+                  ))}
+                </ul>
+                {poll.voteCountsByTime && (
+                  <>
+                    <p className="font-medium mb-1 mt-2">Time available:</p>
+                    <ul className="list-disc list-inside">
+                      {(poll.timeSlots || TIME_SLOTS_POLL).map((slot) => (
+                        <li key={slot}>{slot}: {poll.voteCountsByTime[slot] ?? 0}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+              {(user && (user.role === 'incharge' || user.role === 'admin')) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPollError('');
+                    pollsApi.close(poll._id).then((res) => { setClosedResult(res); loadData(); }).catch((err) => setPollError(err.message || 'Failed to close poll'));
+                  }}
+                  className="px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700"
+                >
+                  Close poll and set drive location
+                </button>
+              )}
+            </div>
+          )}
+          {areas.length === 0 && !loading && (
+            <p className="text-gray-500 text-sm">Complete your profile with a region or area to see and create polls.</p>
+          )}
+        </section>
+
         {areas.length === 0 && !loading && (
           <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl text-amber-800 text-sm">
             Complete your Profile (Region or Area communities) or, if you are incharge, set your region so your community feed appears here.

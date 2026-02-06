@@ -20,7 +20,6 @@ export default function Profile() {
   const [form, setForm] = useState({
     area: '',
     region: '',
-    subscribedAreas: [],
     mobile: '',
     bloodGroup: '',
     transportMode: '',
@@ -43,8 +42,7 @@ export default function Profile() {
           const toArray = (v) => (Array.isArray(v) ? v : v ? [v] : []);
           setForm({
             area: data.area ?? '',
-            region: data.region ?? '',
-            subscribedAreas: toArray(data.subscribedAreas),
+            region: data.region ?? (toArray(data.subscribedAreas)[0] ?? ''),
             mobile: data.mobile ?? '',
             bloodGroup: data.bloodGroup ?? '',
             transportMode: data.transportMode ?? '',
@@ -78,11 +76,16 @@ export default function Profile() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
+    setForm((prev) => {
+      const next = { ...prev, [name]: type === 'checkbox' ? checked : value };
+      if (name === 'region') next.area = '';
+      return next;
+    });
   };
+
+  const subareasInRegion = form.region
+    ? locations.filter((l) => l.region === form.region).sort((a, b) => (a.name || '').localeCompare(b.name || ''))
+    : [];
 
   const handleMultiChange = (field, option, checked) => {
     setForm((prev) => {
@@ -97,7 +100,11 @@ export default function Profile() {
     setMessage({ type: '', text: '' });
     setSaving(true);
     try {
-      const updated = await authApi.updateProfile(form);
+      const payload = {
+        ...form,
+        subscribedAreas: form.region ? [form.region] : []
+      };
+      const updated = await authApi.updateProfile(payload);
       updateUser(updated);
       navigate('/dashboard');
     } catch (err) {
@@ -152,26 +159,37 @@ export default function Profile() {
             <h2 className="text-lg font-semibold text-green-800 mb-3">Basic info</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Area / Location</label>
-                <input
-                  type="text"
-                  name="area"
-                  value={form.area}
-                  onChange={handleChange}
-                  placeholder="e.g. Bangalore North"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
-              </div>
-              <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Region</label>
-                <input
-                  type="text"
+                <select
                   name="region"
                   value={form.region}
                   onChange={handleChange}
-                  placeholder="e.g. Katraj"
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                />
+                >
+                  <option value="">Select region</option>
+                  {[...new Set(locations.map((l) => l.region).filter(Boolean))].sort().map((reg) => (
+                    <option key={reg} value={reg}>{reg}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Subarea</label>
+                <select
+                  name="area"
+                  value={form.area}
+                  onChange={handleChange}
+                  disabled={!form.region}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 disabled:opacity-60 disabled:bg-gray-50"
+                >
+                  <option value="">Select subarea</option>
+                  {subareasInRegion.map((loc) => (
+                    <option key={loc._id} value={loc.name}>{loc.name}</option>
+                  ))}
+                </select>
+                {form.region && subareasInRegion.length === 0 && (
+                  <p className="text-xs text-gray-500 mt-1">No subareas in this region.</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">Your community and alerts are based on Region and Subarea.</p>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Mobile number</label>
@@ -198,27 +216,6 @@ export default function Profile() {
                   ))}
                 </select>
               </div>
-            </div>
-          </section>
-
-          <section>
-            <h2 className="text-lg font-semibold text-green-800 mb-3">Area communities</h2>
-            <p className="text-sm text-gray-600 mb-2">
-              Join area communities to receive automatic AQI alerts for these regions. You will get notifications when your areas need cleaning.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {[...new Set(locations.map((l) => l.region).filter(Boolean))].sort().map((reg) => (
-                <label key={reg} className="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg cursor-pointer hover:bg-green-100">
-                  <input
-                    type="checkbox"
-                    checked={form.subscribedAreas.includes(reg)}
-                    onChange={(e) => handleMultiChange('subscribedAreas', reg, e.target.checked)}
-                    className="w-4 h-4 text-green-600 rounded border-gray-300 focus:ring-green-500"
-                  />
-                  <span className="text-sm text-gray-700">{reg}</span>
-                </label>
-              ))}
-              {locations.length === 0 && <span className="text-sm text-gray-500">No areas yet. Add locations to your system first.</span>}
             </div>
           </section>
 

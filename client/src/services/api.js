@@ -108,6 +108,15 @@ export const aiApi = {
     }).then((r) => r.json())
 };
 
+export const aiPollApi = {
+  submitPollResult: (pollResults) =>
+    fetch(`${API_BASE}/ai-poll/poll-result`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ pollResults })
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t)))
+};
+
 export const communityApi = {
   getMyAreas: () =>
     fetch(`${API_BASE}/community/my-areas`, { headers: headers() }).then((r) => r.json()),
@@ -117,6 +126,34 @@ export const communityApi = {
     fetch(`${API_BASE}/community/posts?region=${encodeURIComponent(region)}`, { headers: headers() }).then((r) =>
       r.json()
     )
+};
+
+export const pollsApi = {
+  getActive: () =>
+    fetch(`${API_BASE}/polls/active`, { headers: headers() }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  getWeekendDrive: () =>
+    fetch(`${API_BASE}/polls/weekend-drive`, { headers: headers() }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  getHighestPriorityRegion: () =>
+    fetch(`${API_BASE}/polls/highest-priority-region`, { headers: headers() }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  getById: (id) =>
+    fetch(`${API_BASE}/polls/${id}`, { headers: headers() }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  generate: (region) =>
+    fetch(`${API_BASE}/polls/generate`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify(region ? { region } : {})
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  vote: (pollId, areaName, timeSlot) =>
+    fetch(`${API_BASE}/polls/${pollId}/vote`, {
+      method: 'POST',
+      headers: headers(),
+      body: JSON.stringify({ areaName, timeSlot })
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t))),
+  close: (pollId) =>
+    fetch(`${API_BASE}/polls/${pollId}/close`, {
+      method: 'POST',
+      headers: headers()
+    }).then((r) => r.text().then((t) => parseJsonResponse(r, t)))
 };
 
 export const notificationsApi = {
