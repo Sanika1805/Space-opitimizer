@@ -1,4 +1,5 @@
 const { getPriorityLocations } = require('../services/aiPriority');
+const { getSubareasWithAiPriority } = require('../services/aiPriorityByRegion');
 const { getDailyHabit } = require('../services/aiHabits');
 const Drive = require('../models/Drive');
 const Location = require('../models/Location');
@@ -7,6 +8,16 @@ exports.priorityLocations = async (req, res) => {
   try {
     const locations = await getPriorityLocations(req.query);
     res.json(locations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+exports.priorityByRegion = async (req, res) => {
+  try {
+    const { region } = req.query;
+    const subareas = await getSubareasWithAiPriority(region || null);
+    res.json(subareas);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

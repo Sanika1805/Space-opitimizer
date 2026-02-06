@@ -100,6 +100,10 @@ export const aiApi = {
     const q = new URLSearchParams(params).toString();
     return fetch(`${API_BASE}/ai/locations/priority${q ? '?' + q : ''}`).then((r) => r.json());
   },
+  priorityByRegion: (region) => {
+    const q = region ? `?region=${encodeURIComponent(region)}` : '';
+    return fetch(`${API_BASE}/ai/locations/priority-by-region${q}`).then((r) => r.json());
+  },
   emergencyActions: (query) =>
     fetch(`${API_BASE}/ai/emergency`, {
       method: 'POST',
